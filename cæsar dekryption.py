@@ -13,12 +13,8 @@ def frek_analyse(txt, alfabet):
         optælling = {bogstav: 0 for bogstav in alfabet}
         for k in txt:
             if k in optælling:
-                o = int(hex(ord(k)+i), 16)
-                if o > 90: #TODO AUTO detekt tal
-                    o -= 26 #TODO AUTO detekt tal
-                elif o < 65: #TODO AUTO detekt tal
-                    o += 26 #TODO AUTO detekt tal
-                optælling[chr(o)] += 1
+                o = alfabet.index(k)+i if alfabet.index(k)+i < len(alfabet) else alfabet.index(k)+i-len(alfabet)
+                optælling[alfabet[o]] += 1
 
         for f in freq:
             if optælling[f] != 0:
@@ -28,7 +24,7 @@ def frek_analyse(txt, alfabet):
                     temp.append(freq[f]-len(txt)/optælling[f])
         print(f'\nKey {i}: {temp[i]}')
 
-    print(f"Keyen er med stor sandstynlighed: \033[32m {26- temp.index(closest(temp, sum(freq.values())))}→({temp.index(closest(temp, sum(freq.values())))}←)")
+    print(f"Keyen er med stor sandstynlighed: \033[32m {len(alfabet)- temp.index(closest(temp, sum(freq.values())))}→({temp.index(closest(temp, sum(freq.values())))}←)")
 
     print("\033[00m")
 
@@ -40,14 +36,13 @@ def menu():
             fil_path = input("Hvor ligger filen? (Default: tekst.txt): ")
             fil_path = "tekst.txt" if fil_path == "" else fil_path
             with open(fil_path, 'r') as file:
-                txt = file.read(string.ascii_uppercase)
+                txt = file.read()
         case _:
             print("Ugyldigt valg")
             menu()
 
-    match input(f"Hvilket alfabet vil du bruge? (Default: {string.ascii_uppercase}): "):
-        case "":
-            alf = string.ascii_uppercase
-            frek_analyse(txt, alf)
+    alf = input(f"Hvilket alfabet vil du bruge? (Default: {string.ascii_uppercase}): ")
+    alf = string.ascii_uppercase if alf == "" else alf
+    frek_analyse(txt, alf)
 
 menu()
